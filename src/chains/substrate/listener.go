@@ -208,25 +208,7 @@ func (l *listener) processBridgeTransfer(hash types.Hash) error {
 			data.Recipient = bridgeEvents[i].FungibleTransfer.Recipient
 
 			e.ChainBridge_FungibleTransfer = append(e.ChainBridge_FungibleTransfer, data)
-		} else if bridgeEvents[i].IsNonFungible {
-			data := events.EventNonFungibleTransfer{}
-			data.Destination = bridgeEvents[i].NonFungibleTransfer.Destination
-			data.DepositNonce = bridgeEvents[i].NonFungibleTransfer.DepositNonce
-			data.ResourceId = bridgeEvents[i].NonFungibleTransfer.ResourceId
-			data.TokenId = bridgeEvents[i].NonFungibleTransfer.TokenId
-			data.Recipient = bridgeEvents[i].NonFungibleTransfer.Recipient
-			data.Metadata = bridgeEvents[i].NonFungibleTransfer.Metadata
-
-			e.ChainBridge_NonFungibleTransfer = append(e.ChainBridge_NonFungibleTransfer, data)
-		} else if bridgeEvents[i].IsGeneric {
-			data := events.EventGenericTransfer{}
-			data.Destination = bridgeEvents[i].NonFungibleTransfer.Destination
-			data.DepositNonce = bridgeEvents[i].NonFungibleTransfer.DepositNonce
-			data.ResourceId = bridgeEvents[i].NonFungibleTransfer.ResourceId
-			data.Metadata = bridgeEvents[i].NonFungibleTransfer.Metadata
-
-			e.ChainBridge_GenericTransfer = append(e.ChainBridge_GenericTransfer, data)
-		} else {
+		}else {
 			return fmt.Errorf("unknow bridge transfer type: %v", bridgeEvents[i])
 		}
 	}
@@ -270,18 +252,6 @@ func (l *listener) handleEvents(evts utils.Events) {
 		for _, evt := range evts.ChainBridge_FungibleTransfer {
 			l.log.Trace("Handling FungibleTransfer event")
 			l.submitMessage(l.subscriptions[FungibleTransfer](evt, l.log))
-		}
-	}
-	if l.subscriptions[NonFungibleTransfer] != nil {
-		for _, evt := range evts.ChainBridge_NonFungibleTransfer {
-			l.log.Trace("Handling NonFungibleTransfer event")
-			l.submitMessage(l.subscriptions[NonFungibleTransfer](evt, l.log))
-		}
-	}
-	if l.subscriptions[GenericTransfer] != nil {
-		for _, evt := range evts.ChainBridge_GenericTransfer {
-			l.log.Trace("Handling GenericTransfer event")
-			l.submitMessage(l.subscriptions[GenericTransfer](evt, l.log))
 		}
 	}
 

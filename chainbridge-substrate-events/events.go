@@ -6,8 +6,6 @@ import (
 
 type ChainBridgeEvents struct {
 	ChainBridge_FungibleTransfer        []EventFungibleTransfer        //nolint:stylecheck,golint
-	ChainBridge_NonFungibleTransfer     []EventNonFungibleTransfer     //nolint:stylecheck,golint
-	ChainBridge_GenericTransfer         []EventGenericTransfer         //nolint:stylecheck,golint
 	ChainBridge_RelayerThresholdChanged []EventRelayerThresholdChanged //nolint:stylecheck,golint
 	ChainBridge_ChainWhitelisted        []EventChainWhitelisted        //nolint:stylecheck,golint
 	ChainBridge_RelayerAdded            []EventRelayerAdded            //nolint:stylecheck,golint
@@ -32,26 +30,6 @@ type EventFungibleTransfer struct {
 	ResourceId   types.Bytes32
 	Amount       types.U256
 	Recipient    types.Bytes
-	Topics       []types.Hash
-}
-
-type EventNonFungibleTransfer struct {
-	Phase        types.Phase
-	Destination  types.U8
-	DepositNonce types.U64
-	ResourceId   types.Bytes32
-	TokenId      types.Bytes
-	Recipient    types.Bytes
-	Metadata     types.Bytes
-	Topics       []types.Hash
-}
-
-type EventGenericTransfer struct {
-	Phase        types.Phase
-	Destination  types.U8
-	DepositNonce types.U64
-	ResourceId   types.Bytes32
-	Metadata     types.Bytes
 	Topics       []types.Hash
 }
 

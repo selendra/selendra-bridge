@@ -12,8 +12,6 @@ import (
 
 	"github.com/selendra/selendra-bridge/ChainBridge/bindings/Bridge"
 	"github.com/selendra/selendra-bridge/ChainBridge/bindings/ERC20Handler"
-	"github.com/selendra/selendra-bridge/ChainBridge/bindings/ERC721Handler"
-	"github.com/selendra/selendra-bridge/ChainBridge/bindings/GenericHandler"
 	"github.com/selendra/selendra-bridge/ChainBridge/chains"
 	utils "github.com/selendra/selendra-bridge/ChainBridge/shared/ethereum"
 	"github.com/selendra/selendra-bridge/chainbridge-utils/blockstore"
@@ -35,8 +33,6 @@ type listener struct {
 	router                 chains.Router
 	bridgeContract         *Bridge.Bridge // instance of bound bridge contract
 	erc20HandlerContract   *ERC20Handler.ERC20Handler
-	erc721HandlerContract  *ERC721Handler.ERC721Handler
-	genericHandlerContract *GenericHandler.GenericHandler
 	log                    log15.Logger
 	blockstore             blockstore.Blockstorer
 	stop                   <-chan int
@@ -62,11 +58,9 @@ func NewListener(conn Connection, cfg *Config, log log15.Logger, bs blockstore.B
 }
 
 // setContracts sets the listener with the appropriate contracts
-func (l *listener) setContracts(bridge *Bridge.Bridge, erc20Handler *ERC20Handler.ERC20Handler, erc721Handler *ERC721Handler.ERC721Handler, genericHandler *GenericHandler.GenericHandler) {
+func (l *listener) setContracts(bridge *Bridge.Bridge, erc20Handler *ERC20Handler.ERC20Handler) {
 	l.bridgeContract = bridge
 	l.erc20HandlerContract = erc20Handler
-	l.erc721HandlerContract = erc721Handler
-	l.genericHandlerContract = genericHandler
 }
 
 // sets the router
@@ -180,10 +174,6 @@ func (l *listener) getDepositEventsForBlock(latestBlock *big.Int) error {
 
 		if addr == l.cfg.erc20HandlerContract {
 			m, err = l.handleErc20DepositedEvent(destId, nonce)
-		} else if addr == l.cfg.erc721HandlerContract {
-			m, err = l.handleErc721DepositedEvent(destId, nonce)
-		} else if addr == l.cfg.genericHandlerContract {
-			m, err = l.handleGenericDepositedEvent(destId, nonce)
 		} else {
 			l.log.Error("event has unrecognized handler", "handler", addr.Hex())
 			return nil

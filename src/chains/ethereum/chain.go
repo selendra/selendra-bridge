@@ -4,7 +4,7 @@
 The ethereum package contains the logic for interacting with ethereum chains.
 
 There are 3 major components: the connection, the listener, and the writer.
-The currently supported transfer types are Fungible (ERC20), Non-Fungible (ERC721), and generic.
+The currently supported transfer types are Fungible (ERC20).
 
 Connection
 
@@ -26,8 +26,6 @@ import (
 
 	bridge "github.com/selendra/selendra-bridge/ChainBridge/bindings/Bridge"
 	erc20Handler "github.com/selendra/selendra-bridge/ChainBridge/bindings/ERC20Handler"
-	erc721Handler "github.com/selendra/selendra-bridge/ChainBridge/bindings/ERC721Handler"
-	"github.com/selendra/selendra-bridge/ChainBridge/bindings/GenericHandler"
 	connection "github.com/selendra/selendra-bridge/ChainBridge/connections/ethereum"
 	"github.com/selendra/selendra-bridge/chainbridge-utils/blockstore"
 	"github.com/selendra/selendra-bridge/chainbridge-utils/core"
@@ -120,10 +118,6 @@ func InitializeChain(chainCfg *core.ChainConfig, logger log15.Logger, sysErr cha
 	if err != nil {
 		return nil, err
 	}
-	err = conn.EnsureHasBytecode(cfg.genericHandlerContract)
-	if err != nil {
-		return nil, err
-	}
 
 	bridgeContract, err := bridge.NewBridge(cfg.bridgeContract, conn.Client())
 	if err != nil {
@@ -144,16 +138,6 @@ func InitializeChain(chainCfg *core.ChainConfig, logger log15.Logger, sysErr cha
 		return nil, err
 	}
 
-	erc721HandlerContract, err := erc721Handler.NewERC721Handler(cfg.erc721HandlerContract, conn.Client())
-	if err != nil {
-		return nil, err
-	}
-
-	genericHandlerContract, err := GenericHandler.NewGenericHandler(cfg.genericHandlerContract, conn.Client())
-	if err != nil {
-		return nil, err
-	}
-
 	if chainCfg.LatestBlock {
 		curr, err := conn.LatestBlock()
 		if err != nil {
@@ -163,7 +147,7 @@ func InitializeChain(chainCfg *core.ChainConfig, logger log15.Logger, sysErr cha
 	}
 
 	listener := NewListener(conn, cfg, logger, bs, stop, sysErr, m)
-	listener.setContracts(bridgeContract, erc20HandlerContract, erc721HandlerContract, genericHandlerContract)
+	listener.setContracts(bridgeContract, erc20HandlerContract)
 
 	writer := NewWriter(conn, cfg, logger, stop, sysErr, m)
 	writer.setContract(bridgeContract)

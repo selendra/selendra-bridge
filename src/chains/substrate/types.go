@@ -49,31 +49,11 @@ type FungibleTransferItem struct {
 	Recipient    types.Bytes
 }
 
-type NonFungibleTransferItem struct {
-	Destination  types.U8
-	DepositNonce types.U64
-	ResourceId   types.Bytes32
-	TokenId      types.Bytes
-	Recipient    types.Bytes
-	Metadata     types.Bytes
-}
-
-type GenericTransferItem struct {
-	Destination  types.U8
-	DepositNonce types.U64
-	ResourceId   types.Bytes32
-	Metadata     types.Bytes
-}
-
 type BridgeEvents []BridgeEvent
 
 type BridgeEvent struct {
 	IsFungible          bool
 	FungibleTransfer    FungibleTransferItem
-	IsNonFungible       bool
-	NonFungibleTransfer NonFungibleTransferItem
-	IsGeneric           bool
-	GenericTransfer     GenericTransferItem
 }
 
 func (m *BridgeEvent) Decode(decoder scale.Decoder) error {
@@ -91,22 +71,6 @@ func (m *BridgeEvent) Decode(decoder scale.Decoder) error {
 			return err
 		}
 		m.FungibleTransfer = dfungible
-	} else if b == 1 {
-		m.IsNonFungible = true
-		dnonfungible := NonFungibleTransferItem{}
-		err = decoder.Decode(&dnonfungible)
-		if err != nil {
-			return err
-		}
-		m.NonFungibleTransfer = dnonfungible
-	} else if b == 2 {
-		m.IsGeneric = true
-		dgeneric := GenericTransferItem{}
-		err = decoder.Decode(&dgeneric)
-		if err != nil {
-			return err
-		}
-		m.GenericTransfer = dgeneric
 	}
 
 	return nil
@@ -159,79 +123,6 @@ func (w *writer) createFungibleProposal(m msg.Message) (*proposal, error) {
 
 	return &proposal{
 		depositNonce: depositNonce,
-		call:         call,
-		sourceId:     types.U8(m.Source),
-		resourceId:   types.NewBytes32(m.ResourceId),
-		method:       method,
-	}, nil
-}
-
-func (w *writer) createNonFungibleProposal(m msg.Message) (*proposal, error) {
-	tokenId := types.NewU256(*big.NewInt(0).SetBytes(m.Payload[0].([]byte)))
-	recipient := types.NewAccountID(m.Payload[1].([]byte))
-	metadata := types.Bytes(m.Payload[2].([]byte))
-	depositNonce := types.U64(m.DepositNonce)
-
-	meta := w.conn.getMetadata()
-	method, err := w.resolveResourceId(m.ResourceId)
-	if err != nil {
-		return nil, err
-	}
-
-	call, err := types.NewCall(
-		&meta,
-		method,
-		recipient,
-		tokenId,
-		metadata,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if w.extendCall {
-		eRID, err := types.EncodeToBytes(m.ResourceId)
-		if err != nil {
-			return nil, err
-		}
-		call.Args = append(call.Args, eRID...)
-	}
-
-	return &proposal{
-		depositNonce: depositNonce,
-		call:         call,
-		sourceId:     types.U8(m.Source),
-		resourceId:   types.NewBytes32(m.ResourceId),
-		method:       method,
-	}, nil
-}
-
-func (w *writer) createGenericProposal(m msg.Message) (*proposal, error) {
-	metadata := types.Bytes(m.Payload[0].([]byte))
-
-	meta := w.conn.getMetadata()
-	method, err := w.resolveResourceId(m.ResourceId)
-	if err != nil {
-		return nil, err
-	}
-
-	call, err := types.NewCall(
-		&meta,
-		method,
-		metadata,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if w.extendCall {
-		eRID, err := types.EncodeToBytes(m.ResourceId)
-		if err != nil {
-			return nil, err
-		}
-
-		call.Args = append(call.Args, eRID...)
-	}
-	return &proposal{
-		depositNonce: types.U64(m.DepositNonce),
 		call:         call,
 		sourceId:     types.U8(m.Source),
 		resourceId:   types.NewBytes32(m.ResourceId),

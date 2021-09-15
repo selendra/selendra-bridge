@@ -49,8 +49,6 @@ type TestContext struct {
 type TestContracts struct {
 	Erc20Sub      common.Address // Contract configured for substrate erc20 transfers
 	Erc20Eth      common.Address // Contact configured for eth to eth erc20 transfer
-	Erc721Sub     common.Address // Contract configured for substrate erc721 transfers
-	Erc721Eth     common.Address // Contract configured for eth to eth erc721 transfer
 	AssetStoreSub common.Address // Contract configure for substrate generic transfer
 	AssetStoreEth common.Address // Contract configured for eth to eth generic transfer
 }
@@ -68,8 +66,6 @@ func CreateConfig(key string, chain msg.ChainId, contracts *utils.DeployedContra
 		Opts: map[string]string{
 			"bridge":             contracts.BridgeAddress.String(),
 			"erc20Handler":       contracts.ERC20HandlerAddress.String(),
-			"erc721Handler":      contracts.ERC721HandlerAddress.String(),
-			"genericHandler":     contracts.GenericHandlerAddress.String(),
 			"blockConfirmations": "3",
 		},
 	}
@@ -92,8 +88,6 @@ func DeployTestContracts(t *testing.T, client *utils.Client, endpoint string, id
 	fmt.Printf("Relayer Threshold:	%s\n", threshold.String())
 	fmt.Printf("Bridge:				%s\n", contracts.BridgeAddress.Hex())
 	fmt.Printf("Erc20Handler:		%s\n", contracts.ERC20HandlerAddress.Hex())
-	fmt.Printf("Erc721Handler:		%s\n", contracts.ERC721HandlerAddress.Hex())
-	fmt.Printf("GenericHandler: 		%s\n", contracts.GenericHandlerAddress.Hex())
 	fmt.Println("====================================================================")
 	return contracts
 }
@@ -152,66 +146,6 @@ func CreateErc20Deposit(t *testing.T, client *utils.Client, destId msg.ChainId, 
 		t.Fatal(err)
 	}
 
-}
-
-func CreateErc721Deposit(t *testing.T, client *utils.Client, destId msg.ChainId, recipient []byte, tokenId *big.Int, contracts *utils.DeployedContracts, rId msg.ResourceId) {
-	data := utils.ConstructErc721DepositData(tokenId, recipient)
-
-	bridgeInstance, err := bridge.NewBridge(contracts.BridgeAddress, client.Client)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = utils.UpdateNonce(client)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	tx, err := bridgeInstance.Deposit(
-		client.Opts,
-		uint8(destId),
-		rId,
-		data,
-	)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = utils.WaitForTx(client, tx)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func CreateGenericDeposit(t *testing.T, client *utils.Client, destId msg.ChainId, metadata []byte, contracts *utils.DeployedContracts, rId msg.ResourceId) {
-	data := utils.ConstructGenericDepositData(metadata)
-
-	bridgeInstance, err := bridge.NewBridge(contracts.BridgeAddress, client.Client)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = utils.UpdateNonce(client)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	tx, err := bridgeInstance.Deposit(
-		client.Opts,
-		uint8(destId),
-		rId,
-		data,
-	)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = utils.WaitForTx(client, tx)
-	if err != nil {
-		t.Fatal(err)
-	}
 }
 
 func WaitForProposalActive(t *testing.T, client *utils.Client, bridge common.Address, nonce uint64) {

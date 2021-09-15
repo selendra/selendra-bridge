@@ -23,8 +23,6 @@ const DefaultGasMultiplier = 1
 var (
 	BridgeOpt             = "bridge"
 	Erc20HandlerOpt       = "erc20Handler"
-	Erc721HandlerOpt      = "erc721Handler"
-	GenericHandlerOpt     = "genericHandler"
 	MaxGasPriceOpt        = "maxGasPrice"
 	GasLimitOpt           = "gasLimit"
 	GasMultiplier         = "gasMultiplier"
@@ -44,8 +42,6 @@ type Config struct {
 	freshStart             bool // Disables loading from blockstore at start
 	bridgeContract         common.Address
 	erc20HandlerContract   common.Address
-	erc721HandlerContract  common.Address
-	genericHandlerContract common.Address
 	gasLimit               *big.Int
 	maxGasPrice            *big.Int
 	gasMultiplier          *big.Float
@@ -67,8 +63,6 @@ func parseChainConfig(chainCfg *core.ChainConfig) (*Config, error) {
 		freshStart:             chainCfg.FreshStart,
 		bridgeContract:         utils.ZeroAddress,
 		erc20HandlerContract:   utils.ZeroAddress,
-		erc721HandlerContract:  utils.ZeroAddress,
-		genericHandlerContract: utils.ZeroAddress,
 		gasLimit:               big.NewInt(DefaultGasLimit),
 		maxGasPrice:            big.NewInt(DefaultGasPrice),
 		gasMultiplier:          big.NewFloat(DefaultGasMultiplier),
@@ -86,12 +80,6 @@ func parseChainConfig(chainCfg *core.ChainConfig) (*Config, error) {
 
 	config.erc20HandlerContract = common.HexToAddress(chainCfg.Opts[Erc20HandlerOpt])
 	delete(chainCfg.Opts, Erc20HandlerOpt)
-
-	config.erc721HandlerContract = common.HexToAddress(chainCfg.Opts[Erc721HandlerOpt])
-	delete(chainCfg.Opts, Erc721HandlerOpt)
-
-	config.genericHandlerContract = common.HexToAddress(chainCfg.Opts[GenericHandlerOpt])
-	delete(chainCfg.Opts, GenericHandlerOpt)
 
 	if gasPrice, ok := chainCfg.Opts[MaxGasPriceOpt]; ok {
 		price := big.NewInt(0)

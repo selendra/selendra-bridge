@@ -3,7 +3,7 @@
 
 /*
 The substrate package contains the logic for interacting with substrate chains.
-The current supported transfer types are Fungible, Nonfungible, and generic.
+The current supported transfer types are Fungible.
 
 There are 3 major components: the connection, the listener, and the writer.
 

@@ -9,8 +9,6 @@
         "opts": {
           "bridge": "0x4C69b9A8462e0E17C0575bE8Ce17dA9778D68E46",
           "erc20Handler": "0x6550b38837051b56105a0BC1521e5b732529c5b4",
-          "erc721Handler": "0x390959d0d06e37320762D82dF0cc26A8F1B7f96B",
-          "genericHandler": "0x12F8B5312483bf9F3a573C5f20510eDd9cf999Be",
           "gasLimit": "8000000",
           "startBlock": "25575042",
           "maxGasPrice": "3000000000",

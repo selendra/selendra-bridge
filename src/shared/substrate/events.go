@@ -8,40 +8,6 @@ import (
 	"github.com/selendra/selendra-bridge/go-substrate-rpc-client/v3/types"
 )
 
-type EventErc721Minted struct {
-	Phase   types.Phase
-	Owner   types.AccountID
-	TokenId types.U256
-	Topics  []types.Hash
-}
-
-type EventErc721Transferred struct {
-	Phase   types.Phase
-	From    types.AccountID
-	To      types.AccountID
-	TokenId types.U256
-	Topics  []types.Hash
-}
-
-type EventErc721Burned struct {
-	Phase   types.Phase
-	TokenId types.AccountID
-	Topics  []types.Hash
-}
-
-type EventExampleRemark struct {
-	Phase  types.Phase
-	Hash   types.Hash
-	Topics []types.Hash
-}
-
-// EventNFTDeposited is emitted when NFT is ready to be deposited to other chain.
-type EventNFTDeposited struct {
-	Phase  types.Phase
-	Asset  types.Hash
-	Topics []types.Hash
-}
-
 // EventFeeChanged is emitted when a fee for a given key is changed.
 type EventFeeChanged struct {
 	Phase    types.Phase

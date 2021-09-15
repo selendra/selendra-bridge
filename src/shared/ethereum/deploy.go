@@ -6,13 +6,10 @@ package utils
 import (
 	"context"
 	"math/big"
-
-	"github.com/selendra/selendra-bridge/ChainBridge/bindings/GenericHandler"
 	"github.com/ethereum/go-ethereum/common"
 
 	bridge "github.com/selendra/selendra-bridge/ChainBridge/bindings/Bridge"
 	erc20Handler "github.com/selendra/selendra-bridge/ChainBridge/bindings/ERC20Handler"
-	erc721Handler "github.com/selendra/selendra-bridge/ChainBridge/bindings/ERC721Handler"
 	"github.com/selendra/selendra-bridge/chainbridge-utils/keystore"
 )
 
@@ -31,11 +28,9 @@ var (
 type DeployedContracts struct {
 	BridgeAddress         common.Address
 	ERC20HandlerAddress   common.Address
-	ERC721HandlerAddress  common.Address
-	GenericHandlerAddress common.Address
 }
 
-// DeployContracts deploys Bridge, Relayer, ERC20Handler, ERC721Handler and CentrifugeAssetHandler and returns the addresses
+// DeployContracts deploys Bridge, Relayer, ERC20Handler, and returns the addresses
 func DeployContracts(client *Client, chainID uint8, initialRelayerThreshold *big.Int) (*DeployedContracts, error) {
 	bridgeAddr, err := deployBridge(client, chainID, RelayerAddresses, initialRelayerThreshold)
 	if err != nil {
@@ -47,17 +42,7 @@ func DeployContracts(client *Client, chainID uint8, initialRelayerThreshold *big
 		return nil, err
 	}
 
-	erc721HandlerAddr, err := deployERC721Handler(client, bridgeAddr)
-	if err != nil {
-		return nil, err
-	}
-
-	genericHandlerAddr, err := deployGenericHandler(client, bridgeAddr)
-	if err != nil {
-		return nil, err
-	}
-
-	deployedContracts := DeployedContracts{bridgeAddr, erc20HandlerAddr, erc721HandlerAddr, genericHandlerAddr}
+	deployedContracts := DeployedContracts{bridgeAddr, erc20HandlerAddr}
 
 	return &deployedContracts, nil
 
@@ -117,43 +102,3 @@ func deployERC20Handler(client *Client, bridgeAddress common.Address) (common.Ad
 	return erc20HandlerAddr, nil
 }
 
-func deployERC721Handler(client *Client, bridgeAddress common.Address) (common.Address, error) {
-	err := client.LockNonceAndUpdate()
-	if err != nil {
-		return ZeroAddress, err
-	}
-
-	erc721HandlerAddr, tx, _, err := erc721Handler.DeployERC721Handler(client.Opts, client.Client, bridgeAddress, [][32]byte{}, []common.Address{}, []common.Address{})
-	if err != nil {
-		return ZeroAddress, err
-	}
-	err = WaitForTx(client, tx)
-	if err != nil {
-		return ZeroAddress, err
-	}
-
-	client.UnlockNonce()
-
-	return erc721HandlerAddr, nil
-}
-
-func deployGenericHandler(client *Client, bridgeAddress common.Address) (common.Address, error) {
-	err := client.LockNonceAndUpdate()
-	if err != nil {
-		return ZeroAddress, err
-	}
-
-	addr, tx, _, err := GenericHandler.DeployGenericHandler(client.Opts, client.Client, bridgeAddress, [][32]byte{}, []common.Address{}, [][4]byte{}, [][4]byte{})
-	if err != nil {
-		return ZeroAddress, err
-	}
-
-	err = WaitForTx(client, tx)
-	if err != nil {
-		return ZeroAddress, err
-	}
-
-	client.UnlockNonce()
-
-	return addr, nil
-}
