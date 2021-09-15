@@ -1,0 +1,31 @@
+{
+    "chains": [
+      {
+        "name": "eth",
+        "type": "ethereum",
+        "id": "42",
+        "endpoint": "wss://kovan.infura.io/ws/v3/c99a3428288744a9a48d0e4e436b6a79",
+        "from": "0xff93B45308FD417dF303D6515aB04D9e89a750Ca",
+        "opts": {
+          "bridge": "0x4C69b9A8462e0E17C0575bE8Ce17dA9778D68E46",
+          "erc20Handler": "0x6550b38837051b56105a0BC1521e5b732529c5b4",
+          "erc721Handler": "0x390959d0d06e37320762D82dF0cc26A8F1B7f96B",
+          "genericHandler": "0x12F8B5312483bf9F3a573C5f20510eDd9cf999Be",
+          "gasLimit": "8000000",
+          "startBlock": "25575042",
+          "maxGasPrice": "3000000000",
+          "blockConfirmations": "10"
+        }
+      },
+      {
+        "name": "sub",
+        "type": "substrate",
+        "id": "1",
+        "endpoint": "ws://localhost:9944",
+        "from": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        "opts": {
+            "useExtendedCall":"true"
+        }
+      }
+    ]
+  }
