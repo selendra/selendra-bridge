@@ -2,8 +2,8 @@
 
 [![License: Apache v2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![GoDoc Reference](https://godoc.org/github.com/selendra/selendra-bridge/go-substrate-rpc-client?status.svg)](https://godoc.org/github.com/selendra/selendra-bridge/go-substrate-rpc-client)
-[![Build Status](https://travis-ci.com/Phala-Network/go-substrate-rpc-client.svg?branch=master)](https://travis-ci.com/Phala-Network/go-substrate-rpc-client)
-[![codecov](https://codecov.io/gh/Phala-Network/go-substrate-rpc-client/branch/master/graph/badge.svg)](https://codecov.io/gh/Phala-Network/go-substrate-rpc-client)
+[![Build Status](https://travis-ci.com/selendra/selendra-bridge/go-substrate-rpc-client.svg?branch=master)](https://travis-ci.com/selendra/selendra-bridge/go-substrate-rpc-client)
+[![codecov](https://codecov.io/gh/selendra/selendra-bridge/go-substrate-rpc-client/branch/master/graph/badge.svg)](https://codecov.io/gh/selendra/selendra-bridge/go-substrate-rpc-client)
 [![Go Report Card](https://goreportcard.com/badge/github.com/selendra/selendra-bridge/go-substrate-rpc-client)](https://goreportcard.com/report/github.com/selendra/selendra-bridge/go-substrate-rpc-client)
 
 Substrate RPC client in Go. It provides APIs and types around Polkadot and any Substrate-based chain RPC calls.
