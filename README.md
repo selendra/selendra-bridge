@@ -1,14 +1,8 @@
 # Selendra Bridge
 
-# Contents
-
-- [Getting Started](#getting-started)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Chain Implementations](#chain-implementations)
-
 # Getting Started
 - Check out our [documentation](https://chainbridge.chainsafe.io).
+- Run [`selendra bridge`](docs/evm-selendra.md).
 
 # Installation
 
