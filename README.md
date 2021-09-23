@@ -2,7 +2,7 @@
 
 # Getting Started
 - Check out our [documentation](https://chainbridge.chainsafe.io).
-- Run selendra bridge [`selendra bridge`](docs/evm-selendra.md).
+- run [`selendra bridge`](docs/evm-selendra.md).
 
 # Installation
 
