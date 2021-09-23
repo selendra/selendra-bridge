@@ -1,8 +1,8 @@
 # Selendra Bridge
 
 # Getting Started
-- Check out our [documentation](https://chainbridge.chainsafe.io).
 - run [`selendra bridge`](docs/evm-selendra.md).
+- check out ChaninBridge [documentation](https://chainbridge.chainsafe.io).
 
 # Installation
 
