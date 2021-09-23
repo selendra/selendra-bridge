@@ -70,13 +70,6 @@ func Erc20BalanceOf(t *testing.T, client *utils.Client, erc20Contract, acct comm
 	return balance
 }
 
-func Erc20AddMinter(t *testing.T, client *utils.Client, erc20Contract, handler common.Address) {
-	err := utils.Erc20AddMinter(client, erc20Contract, handler)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
 func Erc20AssertAllowance(t *testing.T, client *utils.Client, erc20Contract, owner, spender common.Address, expected *big.Int) {
 	amount, err := utils.Erc20GetAllowance(client, erc20Contract, owner, spender)
 	if err != nil {

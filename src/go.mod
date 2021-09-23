@@ -2,6 +2,8 @@ module github.com/selendra/selendra-bridge/ChainBridge
 
 go 1.15
 
+replace github.com/selendra/selendra-bridge/chainbridge-substrate-events => ../chainbridge-substrate-events
+
 require (
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20210527232834-58622d036665 // indirect
 	github.com/ChainSafe/log15 v1.0.0

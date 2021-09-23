@@ -133,7 +133,6 @@ func setupFungibleTests(t *testing.T, ctx *testContext) {
 	erc20ContractASub := ethtest.Erc20DeployMint(t, ctx.ethA.Client, mintAmount)
 	log.Info("Deployed erc20 contract", "address", erc20ContractASub)
 	ethtest.Erc20Approve(t, ctx.ethA.Client, erc20ContractASub, ctx.ethA.BaseContracts.ERC20HandlerAddress, approveAmount)
-	ethtest.Erc20AddMinter(t, ctx.ethA.Client, erc20ContractASub, ctx.ethA.BaseContracts.ERC20HandlerAddress)
 	ethtest.RegisterResource(t, ctx.ethA.Client, ctx.ethA.BaseContracts.BridgeAddress, ctx.ethA.BaseContracts.ERC20HandlerAddress, ctx.EthSubErc20ResourceId, erc20ContractASub)
 	ethtest.SetBurnable(t, ctx.ethA.Client, ctx.ethA.BaseContracts.BridgeAddress, ctx.ethA.BaseContracts.ERC20HandlerAddress, erc20ContractASub)
 
@@ -141,7 +140,6 @@ func setupFungibleTests(t *testing.T, ctx *testContext) {
 	erc20ContractAEth := ethtest.Erc20DeployMint(t, ctx.ethA.Client, mintAmount)
 	log.Info("Deployed erc20 contract", "address", erc20ContractAEth)
 	ethtest.Erc20Approve(t, ctx.ethA.Client, erc20ContractAEth, ctx.ethA.BaseContracts.ERC20HandlerAddress, approveAmount)
-	ethtest.Erc20AddMinter(t, ctx.ethA.Client, erc20ContractAEth, ctx.ethA.BaseContracts.ERC20HandlerAddress)
 	ethErc20ResourceId := msg.ResourceIdFromSlice(append(common.LeftPadBytes(erc20ContractAEth.Bytes(), 31), 0))
 	ethtest.RegisterResource(t, ctx.ethA.Client, ctx.ethA.BaseContracts.BridgeAddress, ctx.ethA.BaseContracts.ERC20HandlerAddress, ethErc20ResourceId, erc20ContractAEth)
 	ethtest.SetBurnable(t, ctx.ethA.Client, ctx.ethA.BaseContracts.BridgeAddress, ctx.ethA.BaseContracts.ERC20HandlerAddress, erc20ContractAEth)
@@ -149,7 +147,6 @@ func setupFungibleTests(t *testing.T, ctx *testContext) {
 	// Deploy Eth<>Eth erc20 on ethB, add handler as minter
 	erc20ContractBEth := ethtest.Erc20DeployMint(t, ctx.ethB.Client, mintAmount)
 	log.Info("Deployed erc20 contract", "address", erc20ContractBEth)
-	ethtest.Erc20AddMinter(t, ctx.ethB.Client, erc20ContractBEth, ctx.ethB.BaseContracts.ERC20HandlerAddress)
 	ethtest.Erc20Approve(t, ctx.ethB.Client, erc20ContractBEth, ctx.ethB.BaseContracts.ERC20HandlerAddress, approveAmount)
 	ethtest.RegisterResource(t, ctx.ethB.Client, ctx.ethB.BaseContracts.BridgeAddress, ctx.ethB.BaseContracts.ERC20HandlerAddress, ethErc20ResourceId, erc20ContractBEth)
 	ethtest.SetBurnable(t, ctx.ethB.Client, ctx.ethB.BaseContracts.BridgeAddress, ctx.ethB.BaseContracts.ERC20HandlerAddress, erc20ContractBEth)

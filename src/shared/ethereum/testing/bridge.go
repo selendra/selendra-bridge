@@ -18,13 +18,6 @@ func RegisterResource(t *testing.T, client *utils.Client, bridge, handler common
 	}
 }
 
-func RegisterGenericResource(t *testing.T, client *utils.Client, bridge, handler common.Address, rId msg.ResourceId, addr common.Address, depositSig, executeSig [4]byte) {
-	err := utils.RegisterGenericResource(client, bridge, handler, rId, addr, depositSig, executeSig)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
 func SetBurnable(t *testing.T, client *utils.Client, bridge, handler, contract common.Address) {
 	err := utils.SetBurnable(client, bridge, handler, contract)
 	if err != nil {
