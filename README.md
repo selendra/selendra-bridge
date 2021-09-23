@@ -1,12 +1,4 @@
-# ChainBridge
-
-<a href="https://discord.gg/ykXsJKfhgq">
-  <img alt="discord" src="https://img.shields.io/discord/593655374469660673?label=Discord&logo=discord&style=flat" />
-</a>
-<a href="https://github.com/selendra/selendra-bridge/ChainBridge/actions">
-  <img alt="build status" src="https://github.com/selendra/selendra-bridge/ChainBridge/workflows/Tests/badge.svg?branch=master" />
-</a>
-
+# Selendra Bridge
 
 # Contents
 
@@ -14,13 +6,9 @@
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Chain Implementations](#chain-implementations)
-- [Testing](#testing)
-- [Simulations](#simulations)
 
 # Getting Started
 - Check out our [documentation](https://chainbridge.chainsafe.io).
-- Try [running ChainBridge locally](https://chainbridge.chainsafe.io/local/).
-- Chat with us on [discord](https://discord.gg/ykXsJKfhgq).
 
 # Installation
 
@@ -29,29 +17,13 @@
 - [Subkey](https://substrate.dev/docs/en/knowledgebase/integrate/subkey): 
 Used for substrate key management. Only required if connecting to a substrate chain.
 
-
 ## Building
 
-`make build`: Builds `chainbridge` in `./build`.
+`make build`: Builds `Selendra Bridge` in `./build`.
 
 **or**
 
-`make install`: Uses `go install` to add `chainbridge` to your GOBIN.
-
-## Docker 
-The official ChainBridge Docker image can be found here.
-
-To build the Docker image locally run:
-
-```
-docker build -t chainsafe/chainbridge .
-```
-
-To start ChainBridge:
-
-``` 
-docker run -v ./config.json:/config.json chainsafe/chainbridge
-```
+`make install`: Uses `go install` to add `Selendra Bridge` to your GOBIN.
 
 # Configuration
 
@@ -110,69 +82,29 @@ To disable loading from the blockstore specify the `--fresh` flag. A custom path
 
 ## Keystore
 
-ChainBridge requires keys to sign and submit transactions, and to identify each bridge node on chain.
+Selendra Bridge requires keys to sign and submit transactions, and to identify each bridge node on chain.
 
-To use secure keys, see `chainbridge accounts --help`. The keystore password can be supplied with the `KEYSTORE_PASSWORD` environment variable.
+To use secure keys, see `selendrabridge accounts --help`. The keystore password can be supplied with the `KEYSTORE_PASSWORD` environment variable.
 
-To import external ethereum keys, such as those generated with geth, use `chainbridge accounts import --ethereum /path/to/key`.
+To import external ethereum keys, such as those generated with geth, use `Selendra Bridge accounts import --ethereum /path/to/key`.
 
-To import private keys as keystores, use `chainbridge account import --privateKey key`.
+To import private keys as keystores, use `selendrabridge account import --privateKey key`.
 
-For testing purposes, chainbridge provides 5 test keys. The can be used with `--testkey <name>`, where `name` is one of `Alice`, `Bob`, `Charlie`, `Dave`, or `Eve`. 
-
-## Metrics
-
-See [metrics.md](/docs/metrics.md).
+For testing purposes, Selendra Bridge provides 5 test keys. The can be used with `--testkey <name>`, where `name` is one of `Alice`, `Bob`, `Charlie`, `Dave`, or `Eve`. 
 
 # Chain Implementations
 
-- Ethereum (Solidity): [chainbridge-solidity](https://github.com/ChainSafe/chainbridge-solidity) 
+- EVM: [Selendra Bridge-Cli](https://github.com/selendra/bridge-cli) 
 
-    The Solidity contracts required for chainbridge. Includes deployment and interaction CLI.
+    The Solidity contracts required for Selendra Bridge. Includes deployment and interaction CLI.
     
     The bindings for the contracts live in `bindings/`. To update the bindings modify `scripts/setup-contracts.sh` and then run `make clean && make setup-contracts`
 
-- Substrate: [chainbridge-substrate](https://github.com/ChainSafe/chainbridge-substrate)
+- Selendra: [Selendra Chain](https://github.com/selendra/selendra-chain)
 
-    A substrate pallet that can be integrated into a chain, as well as an example pallet to demonstrate chain integration.
+    A substrate pallet that can be integrated into a chain.
 
-# Docs
 
-MKdocs will generate static HTML files for Chainsafe markdown files located in `Chainbridge/docs/`
+## License
 
-`make install-mkdocs`: Pull the docker image MkDocs
-
-`make mkdocs`: Run MkDoc's docker image, building and hosting the html files on `localhost:8000`  
-
-# Testing
-
-Unit tests require an ethereum node running on `localhost:8545` and a substrate node running on `localhost:9944`. E2E tests require an additional ethereum node on `localhost:8546`. 
-
-A docker-compose file is provided to run two Geth nodes and a chainbridge-substrate-chain node in isolated environments:
-```
-$ docker-compose -f ./docker-compose-e2e.yml up
-```
-
-See [chainbridge-solidity](https://github.com/chainsafe/chainbridge-solidity) and [chainbridge-substrate-chain](https://github.com/ChainSafe/chainbridge-substrate-chain) for more information on testing facilities.
-
-All Go tests can be run with:
-```
-$ make test
-```
-Go tests specifically for ethereum, substrate and E2E can be run with
-```
-$ make test-eth
-$ make test-sub
-$ make test-e2e
-```
-
-# ChainSafe Security Policy
-
-## Reporting a Security Bug
-
-We take all security issues seriously, if you believe you have found a security issue within a ChainSafe
-project please notify us immediately. If an issue is confirmed, we will take all necessary precautions 
-to ensure a statement and patch release is made in a timely manner.
-
-Please email us a description of the flaw and any related information (e.g. reproduction steps, version) to
-[security at chainsafe dot io](mailto:security@chainsafe.io).
+Selendra-Bridge is implement from [ChainBridge](https://github.com/ChainSafe/ChainBridge) under license [GPL 3.0 licensed](LICENSE-GPL3).
