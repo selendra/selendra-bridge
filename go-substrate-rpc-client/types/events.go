@@ -101,23 +101,23 @@ type EventBalancesReserveRepatriated struct {
 	Topics            []Hash
 }
 
-// EventGrandpaNewAuthorities is emitted when a new authority set has been applied
+// EventGrandpaNewAuthorities is emitted when new authority set has been applied
 type EventGrandpaNewAuthorities struct {
-	Phase          Phase
-	NewAuthorities []struct {
-		AuthorityID     AuthorityID
+	Phase         Phase
+	AuthorityList []struct {
+		AuthorityId     AuthorityID
 		AuthorityWeight U64
 	}
 	Topics []Hash
 }
 
-// EventGrandpaPaused is emitted when the current authority set has been paused
+// EventGrandpaPaused is emitted when current authority set has been paused
 type EventGrandpaPaused struct {
 	Phase  Phase
 	Topics []Hash
 }
 
-// EventGrandpaResumed is emitted when the current authority set has been resumed
+// EventGrandpaPaused is emitted when current authority set has been resumed
 type EventGrandpaResumed struct {
 	Phase  Phase
 	Topics []Hash
@@ -136,6 +136,16 @@ type EventImOnlineAllGood struct {
 	Topics []Hash
 }
 
+// EventImOnlineSomeOffline is emitted when the end of the session, at least once validator was found to be offline
+type EventImOnlineSomeOffline struct {
+	Phase                Phase
+	IdentificationTuples []struct {
+		ValidatorID        AccountID
+		FullIdentification Exposure
+	}
+	Topics []Hash
+}
+
 // Exposure lists the own and nominated stake of a validator
 type Exposure struct {
 	Total  UCompact
@@ -147,16 +157,6 @@ type Exposure struct {
 type IndividualExposure struct {
 	Who   AccountID
 	Value UCompact
-}
-
-// EventImOnlineSomeOffline is emitted when the end of the session, at least once validator was found to be offline
-type EventImOnlineSomeOffline struct {
-	Phase                Phase
-	IdentificationTuples []struct {
-		ValidatorID        AccountID
-		FullIdentification Exposure
-	}
-	Topics []Hash
 }
 
 // EventIndicesIndexAssigned is emitted when an index is assigned to an AccountID.
@@ -234,16 +234,8 @@ type EventStakingOldSlashingReportDiscarded struct {
 
 // EventStakingStakingElection is emitted when a new set of stakers was elected with the given
 type EventStakingStakingElection struct {
-	Phase   Phase
-	Compute ElectionCompute
-	Topics  []Hash
-}
-
-// EventStakingSolutionStored is emitted when a new solution for the upcoming election has been stored
-type EventStakingSolutionStored struct {
-	Phase   Phase
-	Compute ElectionCompute
-	Topics  []Hash
+	Phase  Phase
+	Topics []Hash
 }
 
 // EventStakingBonded is emitted when an account has bonded this amount
@@ -268,6 +260,20 @@ type EventStakingWithdrawn struct {
 	Phase  Phase
 	Stash  AccountID
 	Amount U128
+	Topics []Hash
+}
+
+// EventStakingKicked is emitted when a nominator has been kicked from a validator
+type EventStakingKicked struct {
+	Phase     Phase
+	Nominator AccountID
+	Stash     AccountID
+	Topics    []Hash
+}
+
+type EventStakingChilled struct {
+	Phase  Phase
+	Stash  AccountID
 	Topics []Hash
 }
 
@@ -402,6 +408,22 @@ type EventSystemKilledAccount struct {
 	Topics []Hash
 }
 
+type EventSystemRemarked struct {
+	Phase  Phase
+	Who    AccountID
+	Hash   Hash
+	Topics []Hash
+}
+
+// EventAssetCreated is emitted when an asset was created.
+type EventAssetCreated struct {
+	Phase   Phase
+	AssetID U32
+	Creator AccountID
+	Owner   AccountID
+	Topics  []Hash
+}
+
 // EventAssetIssued is emitted when an asset is issued.
 type EventAssetIssued struct {
 	Phase   Phase
@@ -421,12 +443,131 @@ type EventAssetTransferred struct {
 	Topics  []Hash
 }
 
+// EventAssetBurned is emitted when assets were destroyed.
+type EventAssetBurned struct {
+	Phase   Phase
+	AssetID U32
+	Owner   AccountID
+	Balance U128
+	Topics  []Hash
+}
+
+// EventAssetTeamChanged is emitted when assets management team changed.
+type EventAssetTeamChanged struct {
+	Phase   Phase
+	AssetID U32
+	Issuer  AccountID
+	Admin   AccountID
+	Freezer AccountID
+	Topics  []Hash
+}
+
+// EventAssetOwnerChanged is emitted when assets owner changed.
+type EventAssetOwnerChanged struct {
+	Phase   Phase
+	AssetID U32
+	Owner   AccountID
+	Topics  []Hash
+}
+
+// EventAssetFrozen is emitted when account `who` was frozen.
+type EventAssetFrozen struct {
+	Phase   Phase
+	AssetID U32
+	Who     AccountID
+	Topics  []Hash
+}
+
+// EventAssetThawed is emitted when account `who` was thawed.
+type EventAssetThawed struct {
+	Phase   Phase
+	AssetID U32
+	Who     AccountID
+	Topics  []Hash
+}
+
+// EventAssetAssetFrozen is emitted when asset was frozen.
+type EventAssetAssetFrozen struct {
+	Phase   Phase
+	AssetID U32
+	Topics  []Hash
+}
+
+// EventAssetAssetThawed is emitted when asset was thawed.
+type EventAssetAssetThawed struct {
+	Phase   Phase
+	AssetID U32
+	Topics  []Hash
+}
+
 // EventAssetDestroyed is emitted when an asset is destroyed.
 type EventAssetDestroyed struct {
 	Phase   Phase
 	AssetID U32
-	Who     AccountID
-	Balance U128
+	Topics  []Hash
+}
+
+// EventAssetForceCreated is emitted when asset class was force-created.
+type EventAssetForceCreated struct {
+	Phase   Phase
+	AssetID U32
+	Owner   AccountID
+	Topics  []Hash
+}
+
+// EventAssetMetadataSet is emitted when new metadata has been set for an asset..
+type EventAssetMetadataSet struct {
+	Phase    Phase
+	AssetID  U32
+	Name     Bytes
+	Sybmol   Bytes
+	Decimals U8
+	ISFrozen Bool
+	Topics   []Hash
+}
+
+// EventAssetMetadataCleared is emitted when metadata has been cleared for an asset.
+type EventAssetMetadataCleared struct {
+	Phase   Phase
+	AssetID U32
+	Topics  []Hash
+}
+
+// EventAssetApprovedTransfer is emitted when funds have been approved for transfer to a destination account.
+type EventAssetApprovedTransfer struct {
+	Phase    Phase
+	AssetID  U32
+	Source   AccountID
+	Delegate AccountID
+	Amount   U128
+	Topics   []Hash
+}
+
+// EventAssetApprovalCancelled is emitted when funds have been approved for transfer to a destination account.
+type EventAssetApprovalCancelled struct {
+	Phase    Phase
+	AssetID  U32
+	Source   AccountID
+	Delegate AccountID
+	Topics   []Hash
+}
+
+// EventAssetTransferredApproved is emitted when an `amount` was transferred in its entirety from `owner` to `destination` by
+// the approved `delegate`.
+type EventAssetTransferredApproved struct {
+	Phase       Phase
+	AssetID     U32
+	Owner       AccountID
+	Delegate    AccountID
+	Destination AccountID
+	Amount      U128
+	Topics      []Hash
+}
+
+// EventAssetAssetStatusChanged is emitted when asset has had its attributes changed by the `Force` origin..
+type EventAssetAssetStatusChanged struct {
+	Phase   Phase
+	AssetID U32
 	Topics  []Hash
 }
 
@@ -514,7 +655,7 @@ type EventDemocracyCancelled struct {
 type EventDemocracyExecuted struct {
 	Phase           Phase
 	ReferendumIndex U32
-	Result          bool
+	Result          DispatchResult
 	Topics          []Hash
 }
 
@@ -766,6 +907,51 @@ type EventTechnicalMembershipDummy struct {
 	Topics []Hash
 }
 
+// EventElectionMultiPhaseSolutionStored is emitted when - the solution is signed, this means that it hasn't yet been processed..
+type EventElectionMultiPhaseSolutionStored struct {
+	Phase   Phase
+	Compute ElectionCompute
+	Ejected Bool
+	Topics  []Hash
+}
+
+// EventElectionMultiPhaseElectionFinalized is emitted when - the election has finalized.
+type EventElectionMultiPhaseElectionFinalized struct {
+	Phase   Phase
+	Compute OptionElectionCompute
+	Topics  []Hash
+}
+
+// EventElectionMultiPhaseRewarded is emitted when an account has been rewarded for their signed submission being finalized.
+type EventElectionMultiPhaseRewarded struct {
+	Phase  Phase
+	Who    AccountID
+	Amount U128
+	Topics []Hash
+}
+
+// EventElectionMultiPhaseSlashed is emitted when an account has been slashed for submitting an invalid signed submission.
+type EventElectionMultiPhaseSlashed struct {
+	Phase  Phase
+	Who    AccountID
+	Amount U128
+	Topics []Hash
+}
+
+// EventElectionMultiPhaseSignedPhaseStarted is emitted when signed phase of the given round has started.
+type EventElectionMultiPhaseSignedPhaseStarted struct {
+	Phase  Phase
+	Who    U32
+	Topics []Hash
+}
+
+// EventElectionMultiPhaseUnsignedPhaseStarted is emitted when unsigned phase of the given round has started.
+type EventElectionMultiPhaseUnsignedPhaseStarted struct {
+	Phase  Phase
+	Who    U32
+	Topics []Hash
+}
+
 // EventElectionsNewTerm is emitted when a new term with new members.
 // This indicates that enough candidates existed, not that enough have has been elected.
 // The inner value must be examined for this purpose.
@@ -799,19 +985,24 @@ type EventElectionsMemberKicked struct {
 }
 
 // EventElectionsMemberRenounced is emitted when a member has renounced their candidacy.
-type EventElectionsMemberRenounced struct {
+type EventElectionsRenounced struct {
 	Phase  Phase
 	Member AccountID
 	Topics []Hash
 }
 
-// EventElectionsVoterReported is emitted when a voter (first element) was reported (by the second element)
-// with the the report being successful or not (third element).
-type EventElectionsVoterReported struct {
-	Phase            Phase
-	Target, Reporter AccountID
-	Valid            bool
-	Topics           []Hash
+type EventElectionsCandidateSlashed struct {
+	Phase  Phase
+	Member AccountID
+	Amount U128
+	Topics []Hash
+}
+
+type EventElectionsSeatHolderSlashed struct {
+	Phase  Phase
+	Member AccountID
+	Amount U128
+	Topics []Hash
 }
 
 // A name was set or reset (which will remove all judgements).
@@ -1177,7 +1368,7 @@ type EventSudoKeyChanged struct {
 // A sudo just took place.
 type EventSudoAsDone struct {
 	Phase  Phase
-	Done   bool
+	Result DispatchResult
 	Topics []Hash
 }
 
@@ -1233,22 +1424,22 @@ type EventTreasuryDeposit struct {
 	Topics    []Hash
 }
 
-// EventTreasuryNewTip is emitted when a new tip suggestion has been opened.
-type EventTreasuryNewTip struct {
+// EventTipsNewTip is emitted when a new tip suggestion has been opened.
+type EventTipsNewTip struct {
 	Phase  Phase
 	Hash   Hash
 	Topics []Hash
 }
 
-// EventTreasuryTipClosing is emitted when a tip suggestion has reached threshold and is closing.
-type EventTreasuryTipClosing struct {
+// EventTipsTipClosing is emitted when a tip suggestion has reached threshold and is closing.
+type EventTipsTipClosing struct {
 	Phase  Phase
 	Hash   Hash
 	Topics []Hash
 }
 
 // EventTreasuryTipClosed is emitted when a tip suggestion has been closed.
-type EventTreasuryTipClosed struct {
+type EventTipsTipClosed struct {
 	Phase     Phase
 	Hash      Hash
 	AccountID AccountID
@@ -1257,46 +1448,55 @@ type EventTreasuryTipClosed struct {
 }
 
 // EventTreasuryTipRetracted is emitted when a tip suggestion has been retracted.
-type EventTreasuryTipRetracted struct {
+type EventTipsTipRetracted struct {
 	Phase  Phase
 	Hash   Hash
 	Topics []Hash
 }
 
+// EventTipsTipSlashed is emitted when a tip suggestion has been slashed
+type EventTipsTipSlashed struct {
+	Phase     Phase
+	Hash      Hash
+	AccountID AccountID
+	Balance   U128
+	Topics    []Hash
+}
+
 type BountyIndex U32
 
-// EventTreasuryBountyProposed is emitted for a new bounty proposal.
-type EventTreasuryBountyProposed struct {
+// EventBountyBountyProposed is emitted for a new bounty proposal.
+type EventBountyBountyProposed struct {
 	Phase  Phase
 	Index  BountyIndex
 	Topics []Hash
 }
 
-// EventTreasuryBountyRejected is emitted when a bounty proposal was rejected; funds were slashed.
-type EventTreasuryBountyRejected struct {
+// EventBountyBountyRejected is emitted when a bounty proposal was rejected; funds were slashed.
+type EventBountyBountyRejected struct {
 	Phase  Phase
 	Index  BountyIndex
 	Bond   U128
 	Topics []Hash
 }
 
-// EventTreasuryBountyBecameActive is emitted when a bounty proposal is funded and became active
-type EventTreasuryBountyBecameActive struct {
+// EventBountyBountyBecameActive is emitted when a bounty proposal is funded and became active
+type EventBountyBountyBecameActive struct {
 	Phase  Phase
 	Index  BountyIndex
 	Topics []Hash
 }
 
-// EventTreasuryBountyAwarded is emitted when a bounty is awarded to a beneficiary
-type EventTreasuryBountyAwarded struct {
+// EventBountyBountyAwarded is emitted when a bounty is awarded to a beneficiary
+type EventBountyBountyAwarded struct {
 	Phase       Phase
 	Index       BountyIndex
 	Beneficiary AccountID
 	Topics      []Hash
 }
 
-// EventTreasuryBountyClaimed is emitted when A bounty is claimed by beneficiary
-type EventTreasuryBountyClaimed struct {
+// EventBountyBountyClaimed is emitted when A bounty is claimed by beneficiary
+type EventBountyBountyClaimed struct {
 	Phase       Phase
 	Index       BountyIndex
 	Payout      U128
@@ -1304,15 +1504,15 @@ type EventTreasuryBountyClaimed struct {
 	Topics      []Hash
 }
 
-// EventTreasuryBountyCanceled is emitted when a bounty is cancelled.
-type EventTreasuryBountyCanceled struct {
+// EventBountyBountyCanceled is emitted when a bounty is cancelled.
+type EventBountyBountyCanceled struct {
 	Phase  Phase
 	Index  BountyIndex
 	Topics []Hash
 }
 
-// EventTreasuryBountyExtended is emitted when a bounty is extended.
-type EventTreasuryBountyExtended struct {
+// EventBountyBountyExtended is emitted when a bounty is extended.
+type EventBountyBountyExtended struct {
 	Phase  Phase
 	Index  BountyIndex
 	Topics []Hash
@@ -1332,6 +1532,14 @@ type EventContractsEvicted struct {
 	Contract  AccountID
 	Tombstone bool
 	Topics    []Hash
+}
+
+// EventContractsTerminated is emitted when a contract is terminated.
+type EventContractsTerminated struct {
+	Phase    Phase
+	Owner    AccountID
+	Contract AccountID
+	Topics   []Hash
 }
 
 // EventContractsRestored is emitted when a restoration for a contract has been successful.
@@ -1358,12 +1566,19 @@ type EventContractsScheduleUpdated struct {
 	Topics   []Hash
 }
 
-// EventContractsContractExecution is triggered when an event deposited upon execution of a contract from the account
-type EventContractsContractExecution struct {
+// EventContractsContractEmitted is triggered when an event deposited upon execution of a contract from the account
+type EventContractsContractEmitted struct {
 	Phase   Phase
 	Account AccountID
 	Data    Bytes
 	Topics  []Hash
+}
+
+// EventContractsCodeRemoved is emitted when the last contract that uses this code hash was removed or evicted.
+type EventContractsCodeRemoved struct {
+	Phase    Phase
+	CodeHash Hash
+	Topics   []Hash
 }
 
 // EventUtilityBatchInterrupted is emitted when a batch of dispatches did not complete fully.
@@ -1384,10 +1599,11 @@ type EventUtilityBatchCompleted struct {
 // EventUtilityNewMultisig is emitted when a new multisig operation has begun.
 // First param is the account that is approving, second is the multisig account, third is hash of the call.
 type EventMultisigNewMultisig struct {
-	Phase    Phase
-	Who, ID  AccountID
-	CallHash Hash
-	Topics   []Hash
+	Phase     Phase
+	Approving AccountID
+	Multisig  AccountID
+	CallHash  Hash
+	Topics    []Hash
 }
 
 // TimePoint is a global extrinsic index, formed as the extrinsic index within a block,
@@ -1468,5 +1684,67 @@ type EventMultisigCancelled struct {
 	TimePoint TimePoint
 	ID        AccountID
 	CallHash  Hash
+	Topics    []Hash
+}
+
+type EventParachainSystemValidationFunctionStored struct {
+	Phase  Phase
+	Height U32
+	Topics []Hash
+}
+
+type EventParachainSystemValidationFunctionApplied struct {
+	Phase  Phase
+	Height U32
+	Topics []Hash
+}
+
+type EventParachainSystemUpgradeAuthorized struct {
+	Phase  Phase
+	Hash   Hash
+	Topics []Hash
+}
+
+type EventParachainSystemDownwardMessagesReceived struct {
+	Phase  Phase
+	Count  U32
+	Topics []Hash
+}
+
+type EventParachainSystemDownwardMessagesProcessed struct {
+	Phase  Phase
+	Weight Weight
+	Hash   Hash
+	Topics []Hash
+}
+
+type EventCollatorSelectionNewInvulnerables struct {
+	Phase    Phase
+	Accounts []AccountID
+	Topics   []Hash
+}
+
+type EventCollatorSelectionNewDesiredCandidates struct {
+	Phase   Phase
+	Desired U32
+	Topics  []Hash
+}
+
+type EventCollatorSelectionNewCandidacyBond struct {
+	Phase  Phase
+	Amount U128
+	Topics []Hash
+}
+
+type EventCollatorSelectionCandidateAdded struct {
+	Phase     Phase
+	Candidate AccountID
+	Amount    U128
+	Topics    []Hash
+}
+
+type EventCollatorSelectionCandidateRemoved struct {
+	Phase     Phase
+	Candidate AccountID
 	Topics    []Hash
 }

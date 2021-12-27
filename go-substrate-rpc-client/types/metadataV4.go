@@ -119,16 +119,6 @@ func (m *MetadataV4) ExistsModuleMetadata(module string) bool {
 	return false
 }
 
-type StorageEntryMetadata interface {
-	IsPlain() bool
-	IsMap() bool
-	IsDoubleMap() bool
-	IsNMap() bool
-	Hasher() (hash.Hash, error)
-	Hasher2() (hash.Hash, error)
-	Hashers() ([]hash.Hash, error)
-}
-
 type ModuleMetadataV4 struct {
 	Name       Text
 	Prefix     Text
@@ -151,40 +141,19 @@ func (m *ModuleMetadataV4) Decode(decoder scale.Decoder) error {
 		return err
 	}
 
-	err = decoder.Decode(&m.HasStorage)
+	err = decoder.DecodeOption(&m.HasStorage, &m.Storage)
 	if err != nil {
 		return err
 	}
 
-	if m.HasStorage {
-		err = decoder.Decode(&m.Storage)
-		if err != nil {
-			return err
-		}
-	}
-
-	err = decoder.Decode(&m.HasCalls)
+	err = decoder.DecodeOption(&m.HasCalls, &m.Calls)
 	if err != nil {
 		return err
 	}
 
-	if m.HasCalls {
-		err = decoder.Decode(&m.Calls)
-		if err != nil {
-			return err
-		}
-	}
-
-	err = decoder.Decode(&m.HasEvents)
+	err = decoder.DecodeOption(&m.HasEvents, &m.Events)
 	if err != nil {
 		return err
-	}
-
-	if m.HasEvents {
-		err = decoder.Decode(&m.Events)
-		if err != nil {
-			return err
-		}
 	}
 	return nil
 }
@@ -200,40 +169,19 @@ func (m ModuleMetadataV4) Encode(encoder scale.Encoder) error {
 		return err
 	}
 
-	err = encoder.Encode(m.HasStorage)
+	err = encoder.EncodeOption(m.HasStorage, m.Storage)
 	if err != nil {
 		return err
 	}
 
-	if m.HasStorage {
-		err = encoder.Encode(m.Storage)
-		if err != nil {
-			return err
-		}
-	}
-
-	err = encoder.Encode(m.HasCalls)
+	err = encoder.EncodeOption(m.HasCalls, m.Calls)
 	if err != nil {
 		return err
 	}
 
-	if m.HasCalls {
-		err = encoder.Encode(m.Calls)
-		if err != nil {
-			return err
-		}
-	}
-
-	err = encoder.Encode(m.HasEvents)
+	err = encoder.EncodeOption(m.HasEvents, m.Events)
 	if err != nil {
 		return err
-	}
-
-	if m.HasEvents {
-		err = encoder.Encode(m.Events)
-		if err != nil {
-			return err
-		}
 	}
 	return nil
 }
@@ -246,40 +194,6 @@ type StorageFunctionMetadataV4 struct {
 	Documentation []Text
 }
 
-func (s StorageFunctionMetadataV4) IsPlain() bool {
-	return s.Type.IsType
-}
-
-func (s StorageFunctionMetadataV4) IsMap() bool {
-	return s.Type.IsMap
-}
-
-func (s StorageFunctionMetadataV4) IsDoubleMap() bool {
-	return s.Type.IsDoubleMap
-}
-
-func (s StorageFunctionMetadataV4) IsNMap() bool {
-	return false
-}
-
-func (s StorageFunctionMetadataV4) Hashers() ([]hash.Hash, error) {
-	return nil, fmt.Errorf("Hashers is not supported for metadata v4, please upgrade to use metadata v13 or newer")
-}
-
-func (s StorageFunctionMetadataV4) Hasher() (hash.Hash, error) {
-	if s.Type.IsMap {
-		return s.Type.AsMap.Hasher.HashFunc()
-	}
-	if s.Type.IsDoubleMap {
-		return s.Type.AsDoubleMap.Hasher.HashFunc()
-	}
-	return xxhash.New128(nil), nil
-}
-
-func (s StorageFunctionMetadataV4) Hasher2() (hash.Hash, error) {
-	return nil, fmt.Errorf("Hasher2 is not supported for metadata v4, please upgrade to use metadata v8 or newer")
-}
-
 type StorageFunctionTypeV4 struct {
 	IsType      bool
 	AsType      Type // 0
@@ -287,6 +201,40 @@ type StorageFunctionTypeV4 struct {
 	AsMap       MapTypeV4 // 1
 	IsDoubleMap bool
 	AsDoubleMap DoubleMapTypeV4 // 2
+}
+
+func (s StorageFunctionMetadataV4) IsPlain() bool {
+	return s.Type.IsType
+}
+
+func (s StorageFunctionMetadataV4) Hasher() (hash.Hash, error) {
+	if s.IsMap() {
+		return s.Type.AsMap.Hasher.HashFunc()
+	}
+
+	return DefaultPlainHasher(s)
+}
+
+func (s StorageFunctionMetadataV4) IsMap() bool {
+	return s.Type.IsMap || s.Type.IsDoubleMap
+}
+
+func (s StorageFunctionMetadataV4) Hashers() ([]hash.Hash, error) {
+	if !s.IsMap() {
+		return nil, fmt.Errorf("Hashers() is only to be called on Maps")
+	}
+
+	if s.Type.IsDoubleMap {
+		return nil, fmt.Errorf("getting the two hashers of a DoubleMap is not supported for metadata v4. " +
+			"Please upgrade to use metadata v8 or newer")
+	}
+
+	hashFn, err := s.Type.AsMap.Hasher.HashFunc()
+	if err != nil {
+		return nil, err
+	}
+
+	return []hash.Hash{hashFn}, nil
 }
 
 func (s *StorageFunctionTypeV4) Decode(decoder scale.Decoder) error {

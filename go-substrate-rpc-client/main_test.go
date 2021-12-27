@@ -331,7 +331,7 @@ func Example_displaySystemEvents() {
 			}
 			for _, e := range events.Grandpa_NewAuthorities {
 				fmt.Printf("\tGrandpa:NewAuthorities:: (phase=%#v)\n", e.Phase)
-				fmt.Printf("\t\t%v\n", e.NewAuthorities)
+				fmt.Printf("\t\t%v\n", e.AuthorityList)
 			}
 			for _, e := range events.Grandpa_Paused {
 				fmt.Printf("\tGrandpa:Paused:: (phase=%#v)\n", e.Phase)

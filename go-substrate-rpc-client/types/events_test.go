@@ -46,7 +46,7 @@ func TestDispatchResult_Decode(t *testing.T) {
 	assert.False(t, res.Ok)
 	assert.True(t, res.Error.HasModule)
 	assert.Equal(t, res.Error.Module, byte(1))
-	assert.Equal(t, res.Error.Error, byte(1))
+	assert.Equal(t, res.Error.ModuleError, byte(1))
 
 	// decoder error
 	decoder = scale.NewDecoder(bytes.NewReader([]byte{1, 3, 1}))
