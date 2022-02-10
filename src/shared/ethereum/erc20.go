@@ -7,7 +7,7 @@ import (
 	"math/big"
 
 	"github.com/selendra/selendra-bridge/ChainBridge/bindings/ERC20Handler"
-	ERC20 "github.com/selendra/selendra-bridge/ChainBridge/bindings/SELToken"
+	ERC20 "github.com/selendra/selendra-bridge/ChainBridge/bindings/ERC20PresetMinterPauser"
 	"github.com/selendra/selendra-bridge/chainbridge-utils/msg"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -20,7 +20,7 @@ func DeployMintApproveErc20(client *Client, erc20Handler common.Address, amount 
 	}
 
 	// Deploy
-	erc20Addr, tx, erc20Instance, err := ERC20.DeploySELToken(client.Opts, client.Client)
+	erc20Addr, tx, erc20Instance, err := ERC20.DeployERC20PresetMinterPauser(client.Opts, client.Client, "", "")
 	if err != nil {
 		return ZeroAddress, err
 	}
@@ -78,7 +78,7 @@ func DeployAndMintErc20(client *Client, amount *big.Int) (common.Address, error)
 	}
 
 	// Deploy
-	erc20Addr, tx, erc20Instance, err := ERC20.DeploySELToken(client.Opts, client.Client)
+	erc20Addr, tx, erc20Instance, err := ERC20.DeployERC20PresetMinterPauser(client.Opts, client.Client, "", "")
 	if err != nil {
 		return ZeroAddress, err
 	}
@@ -116,7 +116,7 @@ func Erc20Approve(client *Client, erc20Contract, recipient common.Address, amoun
 		return err
 	}
 
-	instance, err := ERC20.NewSELToken(erc20Contract, client.Client)
+	instance, err := ERC20.NewERC20PresetMinterPauser(erc20Contract, client.Client)
 	if err != nil {
 		return err
 	}
@@ -137,7 +137,7 @@ func Erc20Approve(client *Client, erc20Contract, recipient common.Address, amoun
 }
 
 func Erc20GetBalance(client *Client, erc20Contract, account common.Address) (*big.Int, error) { //nolint:unused,deadcode
-	instance, err := ERC20.NewSELToken(erc20Contract, client.Client)
+	instance, err := ERC20.NewERC20PresetMinterPauser(erc20Contract, client.Client)
 	if err != nil {
 		return nil, err
 	}
@@ -176,8 +176,39 @@ func FundErc20Handler(client *Client, handlerAddress, erc20Address common.Addres
 	return nil
 }
 
+func Erc20AddMinter(client *Client, erc20Contract, handler common.Address) error {
+	err := client.LockNonceAndUpdate()
+	if err != nil {
+		return err
+	}
+
+	instance, err := ERC20.NewERC20PresetMinterPauser(erc20Contract, client.Client)
+	if err != nil {
+		return err
+	}
+
+	role, err := instance.MINTERROLE(client.CallOpts)
+	if err != nil {
+		return err
+	}
+
+	tx, err := instance.GrantRole(client.Opts, role, handler)
+	if err != nil {
+		return err
+	}
+
+	err = WaitForTx(client, tx)
+	if err != nil {
+		return err
+	}
+
+	client.UnlockNonce()
+
+	return nil
+}
+
 func Erc20GetAllowance(client *Client, erc20Contract, owner, spender common.Address) (*big.Int, error) {
-	instance, err := ERC20.NewSELToken(erc20Contract, client.Client)
+	instance, err := ERC20.NewERC20PresetMinterPauser(erc20Contract, client.Client)
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +241,7 @@ func Erc20Mint(client *Client, erc20Address, recipient common.Address, amount *b
 		return err
 	}
 
-	instance, err := ERC20.NewSELToken(erc20Address, client.Client)
+	instance, err := ERC20.NewERC20PresetMinterPauser(erc20Address, client.Client)
 	if err != nil {
 		return err
 	}

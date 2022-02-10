@@ -1,29 +1,36 @@
 {
     "chains": [
       {
-        "name": "eth",
+        "name": "ropsten",
         "type": "ethereum",
-        "id": "42",
-        "endpoint": "wss://kovan.infura.io/ws/v3/c99a3428288744a9a48d0e4e436b6a79",
-        "from": "0xff93B45308FD417dF303D6515aB04D9e89a750Ca",
+        "id": "3",
+        "endpoint": "wss://ropsten.infura.io/ws/v3/87a29c128cdb49329e9b95e524e0ba7b",
+        "from": "0x5b3F084Dd296DBda4a655E83Fc84d39C2b5a5C09",
         "opts": {
-          "bridge": "0x4C69b9A8462e0E17C0575bE8Ce17dA9778D68E46",
-          "erc20Handler": "0x6550b38837051b56105a0BC1521e5b732529c5b4",
-          "gasLimit": "8000000",
-          "startBlock": "25575042",
-          "maxGasPrice": "3000000000",
-          "blockConfirmations": "10"
+          "bridge": "0xe8f9290AC56f4045F070F0306f0dAfba57e2280a",
+          "erc20Handler": "0xf7905969E54981FA3bBA149e80797F00070b7dd1",
+          "startBlock": "11715899"
         }
       },
       {
-        "name": "sub",
+        "name": "selendra",
         "type": "substrate",
         "id": "1",
-        "endpoint": "ws://localhost:9944",
-        "from": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        "endpoint": "wss://rpc1-testnet.selendra.org/",
+        "from": "5DS1Ut8fsQ92p2EwzAhiDakBvCtQemh2mgKEubfbHwXUF1yY",
         "opts": {
             "useExtendedCall":"true"
         }
       }
     ]
   }
+  
+
+
+./chainbridge accounts import --privateKey "0744ccdcad122a430a30d9b0af61de83c7e86f8d7e9af5bcf584162f071d4c97"
+./chainbridge accounts import --sr25519 "5EaALb6DDNjBFoBkyTa88HGAiU4PBaEwenUzzj7X6XMpzDUu.json"
+./chainbridge --config config.json --latest
+
+./chainbridge accounts import --sr25519 --privateKey "jelly decide uphold entry lion place hero industry industry deposit spray glory cousin hard detect silly alone pulse heart moral ozone nurse dentist swift//stash"
+
+ssh sabsaing@118.67.207.88 saing.@2021*
