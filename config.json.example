@@ -25,12 +25,3 @@
     ]
   }
   
-
-
-./chainbridge accounts import --privateKey "0744ccdcad122a430a30d9b0af61de83c7e86f8d7e9af5bcf584162f071d4c97"
-./chainbridge accounts import --sr25519 "5EaALb6DDNjBFoBkyTa88HGAiU4PBaEwenUzzj7X6XMpzDUu.json"
-./chainbridge --config config.json --latest
-
-./chainbridge accounts import --sr25519 --privateKey "jelly decide uphold entry lion place hero industry industry deposit spray glory cousin hard detect silly alone pulse heart moral ozone nurse dentist swift//stash"
-
-ssh sabsaing@118.67.207.88 saing.@2021*
